@@ -24,7 +24,7 @@ def main():
     # Set game variables 
     run = True
     FPS = 60
-    level = 0
+    level = 2
     streak = 0
     lives = 5
     
@@ -67,7 +67,7 @@ def main():
 
         # If you lost the game, set the ending screen 
         if lost:
-            lost_label = lost_font.render("You Lost!!", 1, (255,255,255))
+            lost_label = lost_font.render("You Lost!", 1, (255,255,255))
             WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, 350))
         
         # If you passed a new level, display message 
@@ -75,7 +75,11 @@ def main():
             new_level_label = main_font.render(f"Level {level}", 1, (255,255,255))
             energy_label = main_font.render(f"Your ship regains {heal_amount} units of energy.", 1, (255,255,255))
             WIN.blit(new_level_label, (WIDTH/2 - new_level_label.get_width()/2, 350))
-            WIN.blit(energy_label, (WIDTH/2 - energy_label.get_width()/2, 350 + energy_label.get_height() + 10))
+            WIN.blit(energy_label, (WIDTH/2 - energy_label.get_width()/2, 350 + new_level_label.get_height() + 10))
+        
+            if level == 3:
+                upgrade_label = main_font.render(f"You manage to find an upgrade...", 1, (255,255,255))
+                WIN.blit(upgrade_label, (WIDTH/2 - upgrade_label.get_width()/2, 360 + (new_level_label.get_height() * 2)))
 
         pygame.display.update()
 
@@ -108,7 +112,7 @@ def main():
         # Increment the level and wavelength depending on enemy disappearance 
         if len(enemies) == 0:
             level += 1
-            wave_length += 2
+            wave_length += 3
 
             # Heal the user based on the current streak
             if level > 1:
@@ -137,7 +141,7 @@ def main():
         if (keys[pygame.K_s] or keys[pygame.K_DOWN]) and player.y + player.get_height() + player_vel < HEIGHT: # move down 
             player.y += player_vel
         if keys[pygame.K_SPACE]:
-            player.shoot()
+            player.shoot(level)
         
         # Move the enemies and handle collisions
         for enemy in enemies:
@@ -172,13 +176,16 @@ def main_menu():
     ''' Creates the title screen for the game. '''
 
     title_font = pygame.font.SysFont("comicsans", 70)
+    subtitle_font = pygame.font.SysFont("comicsans", 50)
     run = True
     while run:
 
         # Render the title screen 
         WIN.blit(BG, (0,0))
-        title_label = title_font.render("Press the mouse to begin...", 1, (255,255,255))
+        title_label = title_font.render("Welcome to Space Invaders!", 1, (255,255,255))
+        subtitle_label = subtitle_font.render("Click anywhere to begin playing!", 1, (255,255,255))
         WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 350))
+        WIN.blit(subtitle_label, (WIDTH/2 - subtitle_label.get_width()/2, 350 + title_label.get_height() + 10))
         pygame.display.update()
 
         # Process user input and either start the game or close it. 

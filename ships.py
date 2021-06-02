@@ -99,6 +99,18 @@ class Player(Ship):
     
     def heal(self, heal_amount):
         self.health = 100 if self.health + heal_amount > 100 else self.health + heal_amount
+    
+    def shoot(self, level=0):
+        if self.cool_down_counter == 0:
+            if level < 3:
+                laser = Laser(self.x, self.y, self.laser_img)
+                self.lasers.append(laser)
+            else:
+                laser1 = Laser(int(self.x - self.get_width()/4), self.y, self.laser_img)
+                self.lasers.append(laser1)
+                laser2 = Laser(int(self.x + self.get_width()/4), self.y, self.laser_img)
+                self.lasers.append(laser2)
+            self.cool_down_counter = 1
 
 
 # Enemy Ship
