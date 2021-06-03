@@ -16,7 +16,13 @@ Use either W, A, S, D or the arrow keys on your keyboard to move your spaceship.
 - [x] Modified enemy ships to shoot lasers with different speeds
 - [x] Modified enemy ships to randomly strafe player lasers 
 - [ ] Added powerups for player spaceship to appear onscreen
-- [x] Added powerups for player spacehip based on increased levels, such as shooting multiple lasers
+- [x] Added powerups for player spacehip 
+    - [x] Allowed powerups to be hit via lasers or body
+    - [x] Added streak powerup
+    - [x] Added heart powerup 
+    - [ ] Added speed boost powerup 
+- [x] Added a cap for player speed based on velocity 
+- [x]
 - [ ] Added local highscore
 - [ ] More to come!
 

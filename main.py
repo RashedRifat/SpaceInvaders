@@ -4,6 +4,7 @@ import random
 import math
 from ships import Ship, Player, Enemey
 from lasers import Laser, collide
+from special import SpecialItem
 
 # Load the display 
 WIDTH, HEIGHT = 750, 750
@@ -24,15 +25,16 @@ def main():
     # Set game variables 
     run = True
     FPS = 60
-    level = 2
-    streak = 0
+    level = 0
     lives = 5
     
     # Set enemy variables 
     wave_length = 5
     enemies = []
     enemy_vel = 1
+    special_items = []
 
+    # Set level/lost variables 
     lost = False
     lost_count = 0
 
@@ -40,10 +42,11 @@ def main():
     new_level_counter = 0
     heal_amount = 0
 
+    # Set player variables 
     player_vel = 5
     laser_vel = 5
 
-    player = Player(300, 630)
+    player = Player(300, 630, health=100)
     clock = pygame.time.Clock()
 
     def redraw_window():
@@ -54,7 +57,7 @@ def main():
         # Draw text 
         lives_label = main_font.render(f"Lives: {lives}", 1, (255,255,255))
         level_label = main_font.render(f"Level: {level}", 1, (255,255,255))
-        streak_label = main_font.render(f"Streak: {streak}", 1, (255,255,255))
+        streak_label = main_font.render(f"Streak: {player.streak}", 1, (255,255,255))
 
         WIN.blit(lives_label, (10,10))
         WIN.blit(level_label, (WIDTH - level_label.get_width() -10,10))
@@ -63,6 +66,8 @@ def main():
         # Draw the enemies and player 
         for enemy in enemies:
             enemy.draw(WIN)
+        for item in special_items:
+            item.draw(WIN)
         player.draw(WIN)
 
         # If you lost the game, set the ending screen 
@@ -116,7 +121,7 @@ def main():
 
             # Heal the user based on the current streak
             if level > 1:
-                heal_amount = 20 + (math.floor(streak / 5) * 10)
+                heal_amount = 20 + (math.floor(player.streak / 5) * 10)
                 player.heal(heal_amount)
                 new_level = True
                 new_level_counter = FPS * 2
@@ -124,6 +129,11 @@ def main():
             for i in range(wave_length):
                 enemy = Enemey(random.randrange(50, WIDTH-100), random.randrange(-1500, -100), random.choice(["red", "blue", "green"]))
                 enemies.append(enemy)
+
+        # Spawn special items randomly 
+        if random.randrange(0, 2000) == 1:
+            item = SpecialItem(HEIGHT, WIDTH, FPS, random.choice(["streak", "heart"]))
+            special_items.append(item)
 
         # Close the game 
         for event in pygame.event.get():
@@ -146,7 +156,7 @@ def main():
         # Move the enemies and handle collisions
         for enemy in enemies:
             enemy.move(enemy_vel, WIDTH)
-            streak = enemy.move_lasers(laser_vel, player, streak, HEIGHT)
+            enemy.move_lasers(laser_vel, player, HEIGHT)
 
             if random.randrange(0, 2 * FPS) == 1:
                 enemy.shoot()
@@ -154,21 +164,33 @@ def main():
             if collide(enemy, player):
                 player.health -= 10
                 enemies.remove(enemy)
-                streak = 0
+                player.streak = 0
 
             elif enemy.y + enemy.get_height() > HEIGHT:
                 lives -= 1
                 enemies.remove(enemy)
-                streak = 0
+                player.streak = 0
+        
+        # Handle expiring special items:
+        for sitem in special_items:
+            if sitem.expired:
+                special_items.remove(sitem)
+            elif collide(player, sitem):
+                sitem.on_collision(player)
+                special_items.remove(sitem)
+            else:
+                sitem.decrement()
+
 
         # Move player lasers on the screen 
-        streak = player.move_lasers(-1 * laser_vel, enemies, streak, HEIGHT)
+        player.move_lasers(-1 * laser_vel, enemies, special_items, HEIGHT)
 
         # Set a multiplier for the streak 
-        multiplier = math.floor(streak / 5)
+        multiplier = math.floor(player.streak / 5)
         if multiplier == 0:
             player_vel = 5
         else:
+            multiplier = 4 if multiplier > 4 else multiplier
             player_vel = 5 + (multiplier * 2)
 
 

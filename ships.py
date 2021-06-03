@@ -34,7 +34,7 @@ class Ship:
         for laser in self.lasers:
             laser.draw(window)
     
-    def move_lasers(self, vel, obj, streak, HEIGHT):
+    def move_lasers(self, vel, obj, HEIGHT):
         self.cooldown()
         for laser in self.lasers:
             laser.move(vel)
@@ -42,10 +42,9 @@ class Ship:
                 self.lasers.remove(laser)
             elif laser.collision(obj):
                 obj.health -= 10
-                streak = 0
+                obj.streak = 0
                 self.lasers.remove(laser)
-        
-        return streak
+
     
     def cooldown(self):
         if self.cool_down_counter >= self.COOLDOWN:
@@ -73,21 +72,32 @@ class Player(Ship):
         self.laser_img = YELLOW_LASER
         self.mask = pygame.mask.from_surface(self.ship_img)
         self.max_health = health
+        self.streak = 0
 
-    def move_lasers(self, vel, objs, streak, HEIGHT):
+    def move_lasers(self, vel, objs, special_items, HEIGHT):
         self.cooldown()
         for laser in self.lasers:
             laser.move(vel)
             if laser.off_screen(HEIGHT):
                 self.lasers.remove(laser)
+            
             else:
+                # If lasers hit an enemy, remove them 
                 for obj in objs:
                     if laser.collision(obj):
                         objs.remove(obj)
-                        streak += 1
+                        self.streak += 1
                         if laser in self.lasers:
                             self.lasers.remove(laser)
-        return streak
+
+                # If lasers hit a special object, perform some action 
+                for item in special_items:
+                    if laser.collision(item):
+                        item.on_collision(self)
+                        special_items.remove(item)
+                        print("Hit a special object...")
+                        if laser in self.lasers:
+                            self.lasers.remove(laser)
     
     def draw(self, window):
         super().draw(window)
