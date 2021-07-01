@@ -1,9 +1,9 @@
 # SpaceInvaders!
  
-Space Invaders is a fully interactive game built with the PyGame module. While this project was originally built using [this tutorial](https://www.youtube.com/watch?v=Q-__8Xw9KTM), substansial features have been subsquently added to create a unique game. 
+Space Invaders is a fully interactive game built with the PyGame module. 
 
 ## Gameplay Rules 
-Playing Space Invaders! is very simple. Download the repository and run the main.py file to start the game. 
+Playing Space Invaders! is very simple. Download the repository, install the requirements.txt file and run the main.py file to start the game. 
 
 Within the game, you pilot a lone spaceship, defending your home planet aganist enery spaceships racing towards you. You are able to use your powerful lasers and larger size to destroy enemy ships. Careful, the invading army will also fight back! 
 
@@ -15,16 +15,13 @@ Use either W, A, S, D or the arrow keys on your keyboard to move your spaceship.
 - [x] Added a new level screen 
 - [x] Modified enemy ships to shoot lasers with different speeds
 - [x] Modified enemy ships to randomly strafe player lasers 
-- [ ] Added powerups for player spaceship to appear onscreen
+- [x] Added powerups for player spaceship to appear onscreen
 - [x] Added powerups for player spacehip 
     - [x] Allowed powerups to be hit via lasers or body
     - [x] Added streak powerup
     - [x] Added heart powerup 
-    - [ ] Added speed boost powerup 
 - [x] Added a cap for player speed based on velocity 
 - [x]
-- [ ] Added local highscore
-- [ ] More to come!
 
 ## Sources/Credits 
 This project was developed by following [this tutorial](https://www.youtube.com/watch?v=Q-__8Xw9KTM), released by the TechWithTim YouTube Channel. 
